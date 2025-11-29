@@ -1,35 +1,51 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Drawer,
+  List,
+  ListItemButton,
+  ListItemText,
+  Box,
+} from "@mui/material";
+import CustomerList from "./components/CustomerList";
+import TrainingList from "./components/TrainingList";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+export default function App() {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <Router>
+      <AppBar position="fixed">
+        <Toolbar>
+          <Typography variant="h6">PersonalTrainer</Typography>
+        </Toolbar>
+      </AppBar>
 
-export default App
+      <Drawer
+        variant="permanent"
+        sx={{
+          width: 200,
+          [`& .MuiDrawer-paper`]: { width: 200, top: 64 },
+        }}
+      >
+        <List>
+          <ListItemButton component={Link} to="/customers">
+            <ListItemText primary="Customers" />
+          </ListItemButton>
+
+          <ListItemButton component={Link} to="/trainings">
+            <ListItemText primary="Trainings" />
+          </ListItemButton>
+        </List>
+      </Drawer>
+
+      <Box sx={{ marginLeft: 25, marginTop: 10, padding: 2 }}>
+        <Routes>
+          <Route path="/customers" element={<CustomerList />} />
+          <Route path="/trainings" element={<TrainingList />} />
+          <Route path="*" element={<CustomerList />} />
+        </Routes>
+      </Box>
+    </Router>
+  );
+}
