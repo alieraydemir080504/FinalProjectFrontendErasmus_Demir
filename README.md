@@ -54,5 +54,6 @@ React Router
 ## Running the project
 
 npm install
+
 npm run dev
 
