@@ -1,58 +1,98 @@
 import { useEffect, useState, useMemo } from "react";
-import { Paper, TextField, Typography, Box } from "@mui/material";
+import {
+  Paper,
+  TextField,
+  Typography,
+  Stack,
+  IconButton,
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import dayjs from "dayjs";
 
+import type { Training } from "../types";
+import { deleteTraining, fetchTrainings } from "../trainingapi";
+
 export default function TrainingList() {
-  const [trainings, setTrainings] = useState([]);
+  const [trainings, setTrainings] = useState<Training[]>([]);
   const [searchText, setSearchText] = useState("");
 
+  const refresh = () => {
+    fetchTrainings().then((data) => setTrainings(data));
+  };
+
   useEffect(() => {
-    fetch(
-      "https://customer-rest-service-frontend-personaltrainer.2.rahtiapp.fi/gettrainings"
-    )
-      .then((res) => res.json())
-      .then((data) => setTrainings(data));
+    refresh();
   }, []);
 
   const filtered = useMemo(() => {
-    if (!searchText) return trainings;
+  if (!searchText) return trainings;
+  const lower = searchText.toLowerCase();
 
-    const lower = searchText.toLowerCase();
+  return trainings.filter((t) => {
+    const activity = t.activity ?? "";
+    const duration =
+      t.duration !== null && t.duration !== undefined
+        ? t.duration.toString()
+        : "";
 
-    return trainings.filter((t: any) =>
-      [
-        t.activity,
-        t.duration,
-        t.customer?.firstname,
-        t.customer?.lastname,
-      ]
-        .join(" ")
-        .toLowerCase()
-        .includes(lower)
+    const customer = typeof t.customer === "string" ? t.customer : "";
+
+    return (
+      activity.toLowerCase().includes(lower) ||
+      duration.includes(lower) ||
+      customer.toLowerCase().includes(lower)
     );
-  }, [searchText, trainings]);
+  });
+}, [searchText, trainings]);
+
 
   const columns: GridColDef[] = [
-    { field: "activity", headerName: "Activity", width: 200 },
-    { field: "duration", headerName: "Duration (min)", width: 150 },
-    {
-      field: "date",
-      headerName: "Date",
-      width: 200,
-      valueFormatter: (params: any) =>
-        dayjs(params.value).format("DD.MM.YYYY HH:mm"),
+  {
+    field: "actions",
+    headerName: "Actions",
+    width: 100,
+    sortable: false,
+    renderCell: (params) => (
+      <IconButton
+        size="small"
+        color="error"
+        onClick={() => {
+          if (window.confirm("Delete training?")) {
+            deleteTraining(params.row.id).then(refresh);
+          }
+        }}
+      >
+        <DeleteIcon fontSize="small" />
+      </IconButton>
+    ),
+  },
+
+  { field: "activity", headerName: "Activity", width: 200 },
+  { field: "duration", headerName: "Duration (min)", width: 150 },
+
+  {
+    field: "date",
+    headerName: "Date",
+    width: 200,
+    valueFormatter: (params: any) =>
+      dayjs(params.value).format("DD.MM.YYYY HH:mm"),
+  },
+
+  {
+    field: "customer",
+    headerName: "Customer",
+    width: 240,
+    valueGetter: (params: any) => {
+      const row = params?.row;
+      if (!row) return "";
+      const c = row.customer;
+      if (!c) return "";
+      if (typeof c === "string") return "";
+      return `${c.firstname ?? ""} ${c.lastname ?? ""}`.trim();
     },
-    {
-      field: "customer",
-      headerName: "Customer",
-      width: 240,
-      valueGetter: (params: { value: any }) =>
-        params.value
-          ? `${params.value.firstname} ${params.value.lastname}`
-          : "",
-    },
-  ];
+  },
+];
 
   return (
     <Paper sx={{ padding: 3 }}>
@@ -60,21 +100,21 @@ export default function TrainingList() {
         Trainings
       </Typography>
 
-      <Box sx={{ mb: 2 }}>
+      <Stack direction="row" justifyContent="space-between" sx={{ mb: 2 }}>
         <TextField
-          placeholder="Search"
           size="small"
+          placeholder="Search"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
         />
-      </Box>
+      </Stack>
 
-      <div style={{ height: 600, width: "100%" }}>
+      <div style={{ height: 600 }}>
         <DataGrid
-          autoPageSize
-          rows={filtered}
-          columns={columns}
-          getRowId={row => row._links.self.href}
+           rows={filtered}
+           columns={columns}
+           autoPageSize
+           getRowId={(row) => row.id}
         />
       </div>
     </Paper>
