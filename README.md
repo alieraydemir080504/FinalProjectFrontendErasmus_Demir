@@ -1,73 +1,61 @@
-# React + TypeScript + Vite
+# Personal Trainer Frontend Project
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a React + TypeScript frontend built with Vite for the Personal Trainer assignment in the Haaga-Helia frontend course.
+The application allows managing customers and trainings using a REST API.
+This repository includes the completed Task 1 and Task 2 requirements, I didn't do more because of timing issues.
 
-Currently, two official plugins are available:
+## Task 1 – List Pages, Sorting, Searching
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The following features were implemented:
+Customer list page
+Training list page
+Navigation between both pages
+Sorting using MUI DataGrid
+Searching/filtering
+Date formatting using Day.js
+Data loaded from the given backend
+Both lists are implemented using Material UI DataGrid for clean UI and automatic sorting, mostly at least.
 
-## React Compiler
+## Task 2 – CRUD Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Customer Management
 
-## Expanding the ESLint configuration
+Add new customer
+Edit existing customer
+Delete customer (with yes/no confirmation)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Training Management
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Add training to a specific customer
+Date selection using a datetime picker
+Delete training (with yes/no confirmation)
+Each customer row includes an ADD TRAINING button that opens a dialog linked to that customer, but the according customer doesn't show up in the table.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## API
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+´´´
+https://customer-rest-service-frontend-personaltrainer.2.rahtiapp.fi
+´´´
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Endpoints:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+/api/customers
+/api/gettrainings
+/api/trainings
+... etc.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Tech Stack
+
+React + TypeScript
+Vite
+Material UI
+MUI DataGrid
+Day.js
+React Router
+
+## Running the project
+
+´´´
+npm install
+npm run dev
+´´´
