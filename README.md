@@ -33,9 +33,7 @@ Each customer row includes an ADD TRAINING button that opens a dialog linked to 
 
 ## API
 
-´´´
 https://customer-rest-service-frontend-personaltrainer.2.rahtiapp.fi
-´´´
 
 Endpoints:
 
@@ -55,7 +53,6 @@ React Router
 
 ## Running the project
 
-´´´
 npm install
 npm run dev
-´´´
+
